@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Snake Game</title>
+  <title>Mobile Snake Game</title>
   <style>
     body {
       display: flex;
@@ -29,19 +29,55 @@
       margin-top: 10px;
       font-size: 18px;
     }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      grid-gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
+    .control-btn {
+      width: 60px;
+      height: 60px;
+      font-size: 20px;
+      text-align: center;
+      line-height: 60px;
+      border: 1px solid #333;
+      background-color: #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .control-btn:active {
+      background-color: #aaa;
+    }
   </style>
 </head>
 <body>
   <h1>Snake Game</h1>
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <canvas id="gameCanvas" width="300" height="300"></canvas>
   <p id="score">Score: 0</p>
+  <div class="controls">
+    <div></div>
+    <div class="control-btn" id="up">↑</div>
+    <div></div>
+    <div class="control-btn" id="left">←</div>
+    <div></div>
+    <div class="control-btn" id="right">→</div>
+    <div></div>
+    <div class="control-btn" id="down">↓</div>
+    <div></div>
+  </div>
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
     const box = 20; // Size of each square
-    const canvasSize = canvas.width; // Canvas dimensions (400x400)
-    let snake = [{ x: 200, y: 200 }]; // Initial snake position
+    const canvasSize = canvas.width; // Canvas dimensions (300x300)
+    let snake = [{ x: 100, y: 100 }]; // Initial snake position
     let direction = "RIGHT";
     let food = {
       x: Math.floor((Math.random() * canvasSize) / box) * box,
@@ -49,18 +85,31 @@
     };
     let score = 0;
 
-    // Control the snake
-    document.addEventListener("keydown", changeDirection);
+    // Direction control
+    const controls = {
+      up: "UP",
+      down: "DOWN",
+      left: "LEFT",
+      right: "RIGHT",
+    };
 
-    function changeDirection(event) {
-      const key = event.keyCode;
-      if (key === 37 && direction !== "RIGHT") direction = "LEFT";
-      if (key === 38 && direction !== "DOWN") direction = "UP";
-      if (key === 39 && direction !== "LEFT") direction = "RIGHT";
-      if (key === 40 && direction !== "UP") direction = "DOWN";
+    document.getElementById("up").addEventListener("click", () => setDirection(controls.up));
+    document.getElementById("down").addEventListener("click", () => setDirection(controls.down));
+    document.getElementById("left").addEventListener("click", () => setDirection(controls.left));
+    document.getElementById("right").addEventListener("click", () => setDirection(controls.right));
+
+    function setDirection(newDirection) {
+      if (
+        (newDirection === "UP" && direction !== "DOWN") ||
+        (newDirection === "DOWN" && direction !== "UP") ||
+        (newDirection === "LEFT" && direction !== "RIGHT") ||
+        (newDirection === "RIGHT" && direction !== "LEFT")
+      ) {
+        direction = newDirection;
+      }
     }
 
-    // Draw on canvas
+    // Draw the game
     function drawGame() {
       ctx.clearRect(0, 0, canvasSize, canvasSize);
 
@@ -112,7 +161,7 @@
     }
 
     // Run the game
-    const game = setInterval(drawGame, 300);
+    const game = setInterval(drawGame, 200);
   </script>
 </body>
 </html>
